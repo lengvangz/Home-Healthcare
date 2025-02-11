@@ -28,8 +28,6 @@ The business man want a new design of a datatable to store employees, clients, a
 
 <img src="https://github.com/lengvangz/images/blob/main/image.png" alt="Image" width="50%" height="50%">
 
-https://github.com/lengvangz/images/blob/main/home%20healthcare%20ERD.png
-
 ### SQL 
 
 ** How many coordinators does each manager supervise?

@@ -1,244 +1,190 @@
 # 🩺 Home Healthcare
-<img src="https://github.com/lengvangz/images/blob/main/image.png" alt="Image" width="75%" height="75%">
+<img src="https://github.com/lengvangz/images/blob/main/image.png" alt="Image" width="50%" height="50%">
 
 ## 📖 Table of Contents
 - [Situation](#Situation)
 - [Task](#Task)
 - [Actions](#Actions)
-	- [Dashboard](#Dashboard)
+	- [Diagram](#Diagram)
 	- [SQL](#SQL) 	
 
 ***
 
 ## Situation 
-Yaroslav got married recently. A year into their marriage, his wife shared the exciting news that she was pregnant. Motivated by this, Yaroslav decided to invest in a coffee vending machine as a source of income. He also began collecting data to help maximize his earnings.
+An up and coming businessman had an idea of opening a Home Healthcare agency.  His goal is to provide nursing services to the community.  He wants to help the sick, the disability, the vulnerable.  Fast foward, he now has an agency who does contracting work with the State Department of Human Services.  He also have hundreds of clients, Personal Care Assistants (PCA), and a couple dozen workers.  The startup company is now worth millions of dollars.
+
+As his business grew, he needed a new way to store data.  Something that is fast, effecient and scaleable.  
 
 ***
 
 ## Task
-Yaroslav wants to analyze the data to answer some key questions about his business, including time series trends, sales predictions for the next day, week, and month, and customer purchase behaviors. 
+The business man want a new design of a datatable to store employees, clients, and PCAs information.  He also wants answer a few questions to help optimize business performance, client services, and data integrity.
 
 ***
 
 ## Actions 
 
-### Dashboard
+### Diagram
 
-[<img src="https://github.com/lengvangz/images/blob/main/coffee%20sales%20dashboard.png" alt="Image" width="75%" height="75%">](https://public.tableau.com/app/profile/leng.vang/viz/coffeesales_17369660569190/Dashboard1#1)
+<img src="https://github.com/lengvangz/images/blob/main/image.png" alt="Image" width="50%" height="50%">
 
-click on image for the interactive version
+https://github.com/lengvangz/images/blob/main/home%20healthcare%20ERD.png
 
 ### SQL 
 
-**1. Identify peak purchasing days to plan marketing efforts:**
+** How many coordinators does each manager supervise?
 
-````sql
+```sql
 SELECT
-	TO_CHAR(date, 'day') AS day_of_week,
-	COUNT(*) AS num_purchase
-FROM
-	coffee_sales.sales
+	m.manager_name,
+	COUNT(coord_id) AS num_coordinators
+FROM 
+	coordinator c
+INNER JOIN manager m
+	ON m.manager_id = c.manager_id
 GROUP BY
-	day_of_week
-ORDER BY 
-	num_purchase desc
-LIMIT 3
+	m.manager_name;
 
 ````
 
 #### Answer:
-| day_of_week | num_purchase |
+| manager_name | num_coordinators |
 | ----------- | ----------- |
-| tuesday           | 432          |
-| monday           | 383          |
-| thursday           | 374          |
+| Manager A           | 8          |
+| Manager B           | 5          |
+| Manager C           | 7          |
 
 ***
 
-**2. What is the most popular coffee?**
-
-````sql
-SELECT
-	coffee_name,
-	COUNT(*)
-FROM
-	coffee_sales.sales
-GROUP BY 
-	coffee_name
-ORDER BY
-	COUNT(*) DESC
-LIMIT 1
-
-````
-
-#### Answer:
-| coffee_name | count |
-| ----------- | ----------- |
-| Americano with Milk           | 621           |
-
-***
-
-**3. Analyze total sales trend over time**
+**How many PCAs and Clients does each coordinators has?*
 
 ````sql
 SELECT 
-	EXTRACT(MONTH FROM date) AS num_month,
-	SUM(money) AS total_sales_in_Ukrainian_hryvnias
-FROM 
-	coffee_sales.sales
-GROUP BY 
-	num_month
-ORDER BY 
-	num_month
-````
-
-#### Answer:
-| num_month | total_sales_in_Ukrainian_hryvnias  |  
-| ----------- | ----------- | 
-| 3           | 7050.20  |        
-| 4           | 6720.56  |         
-| 5           | 9063.42  |         
-| 6	      | 7758.76  | 	   
-| 7	      | 6915.91  | 	   
-| 8           | 7613.84  |        
-| 9           | 9988.64  |         
-| 10           | 13891.16  |         
-| 11	      | 8590.54  | 	   
-| 12	      | 6053.04 | 
-
-***
-
-**4. Determine cash vs. card preference by date**
-
-````sql
-SELECT
-	EXTRACT(MONTH FROM date) AS num_month,
-	COUNT(CASE
-		WHEN cash_type = 'card' THEN 1
-	      END)AS num_card,
-	COUNT(CASE
-		WHEN cash_type = 'cash' THEN 1
-	      END) AS num_cash
+	coord_name,
+	COUNT(DISTINCT client_id) AS num_client,
+	COUNT(DISTINCT pca_id) AS num_pca
 FROM
-	coffee_sales.sales
+	coordinator c
+INNER JOIN client_case cc
+	ON c.coord_id = cc.coord_id
 GROUP BY
-	num_month
+	coord_name
 ORDER BY
-	num_month
+	coord_name;
+
 ````
 
 #### Answer:
-| num_month | num_card  | num_cash | 
-| ----------- | ------------- | ------------ |
-| 3           | 175  	      | 31            |
-| 4           | 168         | 28            |
-| 5           | 241         | 26            |
-| 6	      | 223         | 4	     |
-| 7	      | 237         | 0	     |
-| 8	      | 272         | 0	     |
-| 9	      | 344         | 0	     |
-| 10	      | 426         | 0	     |
-| 11	      | 259         | 0	     |
-| 12	      | 189         | 0	     |
+| coffee_name | num_client | num_pca |
+| ----------- | ----------- | ----------- |
+| Coordinator  A | 3           | 3 |
+| Coordinator  B | 8           | 8 |
+| Coordinator  C | 7           | 7 |
+
+PS. The answer above only show 3 out of the 20 rows
 
 ***
 
-**5. What are the top 7 customer's card number and what are their total sales?**
+**Which PCA does not have a client?**
 
 ````sql
-SELECT
-	card,
-	SUM(money) AS total_sales_in_Ukrainian_hryvnias
+SELECT 
+	pca_name
 FROM 
-	coffee_sales.sales
-WHERE
-	card IS NOT NULL
-GROUP BY
-	card
+	pca p
+WHERE NOT EXISTS 
+	(SELECT 1 FROM client_case c WHERE p.pca_id = c.pca_id)
 ORDER BY 
-	total_sales_in_Ukrainian_hryvnias DESC
-LIMIT 7
+	pca_name;
 ````
 
 #### Answer:
-| card | total_sales_in_Ukrainian_hryvnias  |  
+| pca_name |   
+| ----------- | 
+| PCA AN           |        
+| PCA BD           |       
+| PCA DF          |          
+| PCA DG      | 	   
+| PCA DH      |    
+| PCA DJ        |       
+| PCA DL        |         
+| PCA DN        |         
+| PCA E      | 	   
+| PCA G      | 
+| PCA U      | 
+
+***
+
+**What is the distriubtion of client cases based on insurance?**
+
+````sql
+SELECT
+	insurance,
+	COUNT(*)
+FROM 
+	client
+GROUP BY
+	insurance
+ORDER BY
+	COUNT(*) DESC;
+````
+
+#### Answer:
+| insurance | count  |
+| ----------- | ------------- |
+| health guard           | 21  	      | 
+| vitality plan           | 14         |
+| wellness shield           | 14         |
+| care coverage	      | 13         |
+| health assurance	      | 13         |
+| secure health	      | 13         |
+| wellbeing health	      |6         |
+| life shield	      | 5         |
+| life shield	      | 1         |
+
+
+***
+
+**Which client are the age of 64 and have insurance health guard?**
+
+````sql
+SELECT 
+	client_name,
+	EXTRACT(YEAR FROM age(client_dob)) AS age
+FROM 
+	client
+WHERE 
+	insurance LIKE 'health guard'
+	AND EXTRACT(YEAR FROM age(client_dob)) :: int > 64
+GROUP BY
+	client_name,
+	age;
+````
+
+#### Answer:
+| client_name | age  |  
 | ----------- | ------------- |  
-| ANON-0000-0000-0012           | 3584.60  	      |
-| ANON-0000-0000-0009           | 2343.98         |
-| ANON-0000-0000-0141           | 2314.82         |
-| ANON-0000-0000-0276	      | 1810.94         |
-| ANON-0000-0000-0040	      | 1519.48         |
-| ANON-0000-0000-0097	      | 1406.34         |
-| ANON-0000-0000-00507	      | 1368.18         | 
+|           |       |
+
 
 ***
 
-**6. Find correlations between coffee type and payment method:**
+**Are all PCA linked to a coordinator, but not assigned to any client?**
 
 ````sql
-SELECT
-	coffee_name,
-	COUNT(CASE
-		WHEN cash_type = 'cash' THEN 1
-	      END) AS cash_count,
-	COUNT(CASE
-		WHEN cash_type = 'card' THEN 1
-              END) AS card_count
-FROM
-	coffee_sales.sales
-GROUP BY
-	coffee_name
-ORDER BY
-	coffee_name
+SELECT 
+	pca_name
+FROM 
+	pca p
+INNER JOIN client_case c
+	ON p.pca_id = c.pca_id
+WHERE 
+	client_id = ' ' OR client_id IS NULL;
 ````
 
 #### Answer:
-| coffee_name | cash_count  | card_count | 
-| ----------- | ----------- | ------------ |
-| Americano           | 14  | 313        |
-| Americano with Milk           | 15 | 606        |
-| Cappuccino	      | 15 | 353	   |
-| Cocoa	      | 4 | 135	   |
-| Cortado	      | 5  | 242	   |
-| Espresso	      | 5  | 92	   |
-| Hot Chocolate	      | 6  | 200	   |
-| Lattee	      | 25  | 593	   |
+| pca_name |
+| ----------- |
+|            |
 
 ***
-
-**7. Identify times of day with the highest sales volume: **
-
-````sql
-SELECT
-	EXTRACT(HOUR FROM datetime) AS purchase_hour,
-	COUNT(*) AS num_purchase
-FROM
-	coffee_sales.sales
-GROUP BY
-	purchase_hour
-ORDER BY 
-	purchase_hour
-````
-
-#### Answer:
-| purchase_hour | num_purchase |  
-| ----------- | ----------- | 
-| 7           | 65         | 
-| 8           | 174         |
-| 9           | 169         | 
-| 10           | 261         | 
-| 11           | 227         |
-| 12           | 191         | 
-| 13           | 163         | 
-| 14           | 153         |
-| 15           | 146         | 
-| 16           | 181         | 
-| 17           | 147         |
-| 18           | 157         | 
-| 19           | 173         | 
-| 20           | 139         |
-| 21          | 178         | 
-| 22           | 99         | 
-
-***
-

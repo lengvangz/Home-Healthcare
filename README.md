@@ -11,14 +11,15 @@
 ***
 
 ## Situation 
-An up and coming businessman had an idea of opening a Home Healthcare agency.  His goal is to provide nursing services to the community.  He wants to help the sick, the disability, the vulnerable.  Fast foward, he now has an agency who does contracting work with the State Department of Human Services.  He also have hundreds of clients, Personal Care Assistants (PCA), and a couple dozen workers.  The startup company is now worth millions of dollars.
+An up-and-coming businessman had an idea to open a home healthcare agency. His goal was to provide nursing services to the community. He wanted to help the sick, the disabled, and the vulnerable.
 
-As his business grew, he needed a new way to store data.  Something that is fast, effecient and scaleable.  
+Fast forward to today, he now owns an agency that contracts with the State Department of Human Services. He also has hundreds of clients, personal care assistants (PCAs), and a couple dozen employees. The startup company is now worth millions of dollars.
 
 ***
 
 ## Task
-The business man want a new design of a datatable to store employees, clients, and PCAs information.  He also wants answer a few questions to help optimize business performance, client services, and data integrity.
+
+To keep up with his fast-growing business, the businessman wants a new design for storing data. He wants a data table to store information on employees, clients, and PCAs. He also wants an easy way to extract and transform the data. Additionally, he wants answers to his questions regarding optimizing business performance, client services, and data integrity.
 
 ***
 

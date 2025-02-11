@@ -26,7 +26,7 @@ The business man want a new design of a datatable to store employees, clients, a
 
 ### Diagram
 
-<img src="https://github.com/lengvangz/images/blob/main/home%20healthcare%20ERD.png" alt="Image" width="50%" height="50%">
+<img src="https://github.com/lengvangz/images/blob/main/home%20healthcare%20ERD.png" alt="Image" width="100%" height="100%">
 
 ### SQL 
 
